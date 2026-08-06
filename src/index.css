@@ -1,0 +1,50 @@
+/* index.css - Estilos globales de la aplicación */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #131316;
+  --color-bg-elevated: #1c1c21;
+  --color-border: #2c2c33;
+  --color-text: #f5f5f7;
+  --color-text-muted: #9a9aa5;
+  --color-heading: #a9b0c3;
+  --color-accent: #ec4899;
+  --color-accent-hover: #f472b6;
+  --color-button-secondary: #3a3a42;
+  --color-button-secondary-hover: #4a4a54;
+  --radius: 8px;
+  --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+input {
+  font-family: inherit;
+}
+
+input:focus,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
