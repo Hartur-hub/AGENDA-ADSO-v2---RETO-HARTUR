@@ -1,79 +1,66 @@
-import { useState, useEffect } from 'react'
-import ContactoCard from './components/ContactoCard.jsx'
-import FormularioContacto from './components/FormularioContacto.jsx'
-import './App.css'
+import { useState, useEffect } from "react";
+import { listarContactos, crearContacto, eliminarContactoPorId } from "./api.js";
+import FormularioContacto from "./components/FormularioContacto";
+import ContactoCard from "./components/ContactoCard";
 
-function App() {
-  // Carga inicial desde localStorage con fallback a datos por defecto si está vacío
-  const [contactos, setContactos] = useState(() => {
-    const contactosGuardados = localStorage.getItem('contactos')
-    if (contactosGuardados) {
-      return JSON.parse(contactosGuardados)
-    }
-    return [
-      { id: 1, nombre: 'Cristian', telefono: '3217945491', correo: 'cristian@sena.edu.co', etiqueta: 'Instructor' },
-      { id: 2, nombre: 'Jeronimo', telefono: '3044670422', correo: 'jeronimo@sena.edu.co', etiqueta: 'Aprendiz' },
-      { id: 3, nombre: 'Andres', telefono: '3054149618', correo: 'andres@sena.edu.co', etiqueta: 'Aprendiz' },
-    ]
-  })
+export default function App() {
+  const [contactos, setContactos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
 
-  // Estado para el input de búsqueda (Reto B)
-  const [busqueda, setBusqueda] = useState('')
-
-  // Persistencia automática: Guarda en localStorage cada vez que cambia 'contactos'
   useEffect(() => {
-    localStorage.setItem('contactos', JSON.stringify(contactos))
-  }, [contactos])
+    async function cargarContactos() {
+      try {
+        const data = await listarContactos();
+        setContactos(data);
+      } catch (e) {
+        setError("No se pudo cargar la lista de contactos");
+      } finally {
+        setCargando(false);
+      }
+    }
+    cargarContactos();
+  }, []);
 
-  // Agrega un nuevo contacto al estado
-  const agregarContacto = (nuevo) => {
-    setContactos((prev) => [...prev, { id: Date.now(), ...nuevo }])
-  }
+  const agregarContacto = async (nuevo) => {
+    try {
+      const creado = await crearContacto(nuevo);
+      setContactos((prev) => [...prev, creado]);
+    } catch (e) {
+      setError("No se pudo agregar el contacto");
+    }
+  };
 
-  // Elimina un contacto por su id
-  const eliminarContacto = (id) => {
-    setContactos((prev) => prev.filter((c) => c.id !== id))
-  }
+  const eliminarContacto = async (id) => {
+    try {
+      await eliminarContactoPorId(id);
+      setContactos((prev) => prev.filter((c) => c.id !== id));
+    } catch (e) {
+      setError("No se pudo eliminar el contacto");
+    }
+  };
 
-  // Filtrado en vivo sin mutar el arreglo original (Reto B)
-  const contactosFiltrados = contactos.filter((c) =>
-    c.nombre.toLowerCase().includes(busqueda.toLowerCase())
-  )
+  if (cargando) return <p className="p-8 text-center text-slate-400">Cargando contactos...</p>;
 
   return (
-    <main className="app-container">
-      <h1 className="app-title">Agenda ADSO v3</h1>
-
+    <main className="max-w-5xl mx-auto p-6 space-y-8 text-white">
+      <h1 className="text-4xl font-extrabold text-center tracking-tight text-white">
+        Agenda ADSO v5
+      </h1>
+      
+      {error && <p className="text-red-400 bg-red-950/50 border border-red-800 text-center p-3 rounded-lg">{error}</p>}
+      
       <FormularioContacto onAgregar={agregarContacto} />
 
-      {/* Input de Búsqueda Controlado (Reto B) */}
-      <div className="busqueda-container">
-        <input
-          type="text"
-          placeholder="Buscar contacto por nombre..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="input-busqueda"
-        />
-      </div>
-
-      <div className="lista-contactos">
-        {contactos.length === 0 ? (
-          <p className="mensaje-vacio">Todavía no hay contactos. Agrega el primero arriba.</p>
-        ) : contactosFiltrados.length === 0 ? (
-          <p className="mensaje-vacio">No se encontraron contactos.</p>
-        ) : (
-          contactosFiltrados.map((c) => (
-            <ContactoCard
-              key={c.id}
-              {...c}
-              onEliminar={eliminarContacto}
-            />
-          ))
-        )}
-      </div>
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {contactos.map((contacto) => (
+          <ContactoCard
+            key={contacto.id}
+            {...contacto}
+            onEliminar={() => eliminarContacto(contacto.id)}
+          />
+        ))}
+      </section>
     </main>
-  )
+  );
 }
-
-export default App
