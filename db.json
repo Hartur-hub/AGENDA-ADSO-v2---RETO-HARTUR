@@ -1,0 +1,51 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nombre": "Administrador",
+      "correo": "admin@adso.com",
+      "password": "Password123!",
+      "rol": "admin"
+    },
+    {
+      "id": "2",
+      "nombre": "Usuario Estándar",
+      "correo": "user@adso.com",
+      "password": "User123!",
+      "rol": "user"
+    },
+    {
+      "nombre": "Hartur Parra",
+      "correo": "harturparra@gmail.com",
+      "password": "hartur",
+      "rol": "user",
+      "id": "obzDmjiJkJw"
+    },
+    {
+      "nombre": "Hartur Parra",
+      "correo": "parra@gmail.com",
+      "password": "parraa",
+      "rol": "user",
+      "id": "gXgBjdtcuW4"
+    }
+  ],
+  "contactos": [
+    {
+      "id": "1",
+      "nombre": "Carlos",
+      "apellido": "Mendoza",
+      "telefono": "3001234567",
+      "email": "carlos.mendoza@mantenimiento.com",
+      "categoria": "Mantenimiento"
+    },
+    {
+      "nombre": "tilin",
+      "apellido": "perez",
+      "telefono": "31",
+      "email": "",
+      "categoria": "Mantenimiento",
+      "id": "Epik_gZF6Pk"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
